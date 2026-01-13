@@ -83,31 +83,37 @@ database/
 ```bash
 git clone https://github.com/USERNAME/booking-futsal.git
 cd booking-futsal
+```
 
 ### 2. Install Dependency
+```bash
 composer install
 npm install
-
+```
 ### 3. Setup Environment
+```bash
 cp .env.example .env
 
 ### 4. Konfigurasi Database di file .env
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=booking_futsal
 DB_USERNAME=root
 DB_PASSWORD=
-
+```
 ⚠️ Pastikan database booking_futsal sudah dibuat di MySQL.
 
 ### 5. Migrasi & Seeder
+```bash
 php artisan migrate --seed
-
+```
 ### 6. Jalankan Aplikasi
+```bash
 npm run dev
 php artisan serve
-
+```
 ⚠️ gunakan terminal yang berbeda untuk efektifitas.
 
 ---
@@ -132,6 +138,7 @@ Gunakan branch fitur:
 feature/nama-fitur
 
 Contoh Workflow
+```bash
 git checkout main
 git pull origin main
 git checkout -b feature/booking-validation
@@ -141,7 +148,7 @@ git checkout -b feature/booking-validation
 git add .
 git commit -m "feat: add booking validation"
 git push origin feature/booking-validation
-
+```
 
 Merge melalui Pull Request.
 
