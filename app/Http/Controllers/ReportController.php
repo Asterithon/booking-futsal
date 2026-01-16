@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $date = $request->date;
-        $bookings = Report::bookingByDate($date);
-        $total = Report::totalIncome($date);
+        $bookings = Booking::with(['user', 'field'])
+            ->orderBy('booking_date', 'desc')
+            ->get();
 
-        return view('reports.index', compact('bookings', 'total', 'date'));
+        return view('reports.index', compact('bookings'));
     }
 }
