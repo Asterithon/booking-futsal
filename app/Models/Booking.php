@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+
 class Booking extends Model
 {
     protected $fillable = [
@@ -43,4 +44,10 @@ class Booking extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function statusHistories()
+{
+    return $this->hasMany(BookingStatusHistory::class);
+}
+
 }

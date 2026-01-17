@@ -34,13 +34,25 @@ Route::middleware('auth')->group(function () {
         ->name('booking.store');
     Route::get('/payment', [BookingController::class, 'payment'])
         ->name('booking.payment');
+    Route::get('/booking/availability', [BookingController::class, 'availability'])
+    ->middleware('auth')
+    ->name('booking.availability');
+
+
 });
 
 // untuk admin
 Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::resource('fields', FieldController::class);
+    Route::resource('fields', FieldController::class)
+        ->except(['show', 'destroy']);
     Route::get('/reports', [ReportController::class, 'index'])
         ->name('reports.index');
+    Route::get('/bookings/admin', [BookingController::class, 'adminIndex'])->name('bookings.admin');
+        Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('bookings.show');
+        Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+        Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+        Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.status');
+        Route::delete('/bookings/{booking}', [BookingController::class, 'cancel'])->name('bookings.cancel');
     Route::get('/booking', [BookingController::class, 'index'])
         ->name('bookings.index');
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
