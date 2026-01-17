@@ -1,57 +1,82 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Lapangan
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="text-xl font-semibold">Kelola Lapangan</h2>
+
+            <a href="{{ route('fields.create') }}"
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                + Tambah Lapangan
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-6">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <div class="bg-white p-6 rounded shadow">
-
-                <table class="w-full border-collapse">
-    <thead>
-        <tr class="border-b">
-            <th class="text-left py-2">Nama Lapangan</th>
-            <th class="text-left py-2">Deskripsi</th>
-            <th class="text-left py-2">Harga per Jam</th>
-            <th class="text-left py-2">Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($fields as $field)
-            <tr class="border-b">
-                <td class="py-2">
-                    {{ $field->name }}
-                </td>
-                <td class="py-2">
-                    {{ $field->description ?? '-' }}
-                </td>
-                <td class="py-2">
-                    Rp {{ number_format($field->price_per_hour, 0, ',', '.') }}
-                </td>
-                <td class="py-2">
-                    <span class="px-2 py-1 text-sm rounded
-                        {{ $field->status === 'available'
-                            ? 'bg-green-200 text-green-800'
-                            : 'bg-yellow-200 text-yellow-800' }}">
-                        {{ ucfirst($field->status) }}
-                    </span>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4" class="py-4 text-center text-gray-500">
-                    Belum ada data lapangan
-                </td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
-
+        @if ($fields->isEmpty())
+            <div class="text-gray-500 text-center py-10">
+                Belum ada data lapangan.
             </div>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach ($fields as $field)
+                    <div class="bg-white rounded shadow overflow-hidden">
 
-        </div>
+                        {{-- Gambar Utama --}}
+                        <div class="h-48 bg-gray-100">
+                            @if ($field->primaryImage)
+                                <img src="{{ asset('storage/'.$field->primaryImage->image_path) }}"
+                                     class="w-full h-full object-cover">
+                            @else
+                                <div class="flex items-center justify-center h-full text-gray-400">
+                                    No Image
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Konten --}}
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg">
+                                {{ $field->name }}
+                            </h3>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Rp {{ number_format($field->price_per_hour) }} / jam
+                            </p>
+
+                            {{-- Status --}}
+                            <div class="mt-2">
+                                @php
+                                    $statusColor = match($field->status) {
+                                        'available' => 'bg-green-100 text-green-700',
+                                        'maintenance' => 'bg-yellow-100 text-yellow-700',
+                                        'disabled' => 'bg-red-100 text-red-700',
+                                    };
+                                @endphp
+
+                                <span class="text-xs px-2 py-1 rounded {{ $statusColor }}">
+                                    {{ ucfirst($field->status) }}
+                                </span>
+                            </div>
+
+                            {{-- Aksi --}}
+                            <div class="flex gap-2 mt-4">
+                                <a href="{{ route('fields.edit', $field->id) }}"
+                                   class="px-3 py-1 text-sm bg-gray-200 rounded hover:bg-gray-300">
+                                    Edit
+                                </a>
+
+                                {{-- optional: detail --}}
+                                {{-- 
+                                <a href="{{ route('fields.show', $field->id) }}"
+                                   class="px-3 py-1 text-sm bg-blue-100 rounded">
+                                    Detail
+                                </a>
+                                --}}
+                            </div>
+                        </div>
+
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </div>
 </x-app-layout>

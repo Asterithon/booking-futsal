@@ -33,7 +33,7 @@
                         Kelola Lapangan
                     </a>
 
-                    <a href="{{ route('bookings.index') }}"
+                    <a href="{{ route('bookings.admin') }}"
                         class="bg-yellow-600 text-white text-center py-4 rounded hover:bg-yellow-700">
                         booking
                     </a>

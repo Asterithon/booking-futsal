@@ -10,6 +10,17 @@ class Field extends Model
         'name',
         'description',
         'price_per_hour',
-        'status'
+        'status',
     ];
+
+    public function images()
+    {
+        return $this->hasMany(FieldImage::class);
+    }
+
+    public function primaryImage()
+    {
+        return $this->hasOne(FieldImage::class)->where('is_primary', true);
+    }
 }
+
