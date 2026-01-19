@@ -21,7 +21,7 @@
         }
     </style>
 
-    <div class="max-w-xl mx-auto py-6">
+    <div class="max-w-xl mx-auto bg-white mt-5 p-6 rounded shadow">
         <form method="POST" action="{{ route('booking.store') }}" id="bookingForm">
             @csrf
 
@@ -50,6 +50,35 @@
                     class="w-full border px-3 py-2 rounded"
                     required>
             </div>
+
+            <div class="mb-6">
+    <label class="block mb-2 font-semibold">Pilih Lapangan</label>
+
+    <div class="grid md:grid-cols-3 gap-4">
+        @foreach ($fields as $field)
+            <button type="button" id="fieldInput"
+                class="field-card border rounded p-3 text-left hover:ring-2"
+                data-field-id="{{ $field->id }}"
+                data-price="{{ $field->price_per_hour }}">
+
+                <img
+    src="{{ optional($field->primaryImage)->image_path
+            ? asset('storage/'.$field->primaryImage->image_path)
+            : asset('images/comfort.jpeg') }}"
+    class="w-full h-40 object-cover rounded"
+>
+
+
+                <h4 class="font-semibold">{{ $field->name }}</h4>
+                <p class="text-sm text-gray-500">
+                    Rp {{ number_format($field->price_per_hour) }}/jam
+                </p>
+            </button>
+        @endforeach
+    </div>
+</div>
+
+<input type="hidden" name="field_id" id="fieldId">
 
 
             <!-- Pilih Jam -->
@@ -108,14 +137,38 @@
 </x-app-layout>
 
 <script>
+let selectedField = null;
+
+document.querySelectorAll('.field-card').forEach(card => {
+    card.addEventListener('click', () => {
+
+        // Reset semua card
+        document.querySelectorAll('.field-card').forEach(c => {
+            c.classList.remove('ring-2', 'ring-blue-600');
+        });
+
+        // Tandai yang dipilih
+        card.classList.add('ring-2', 'ring-blue-600');
+
+        // Set field ID
+        selectedField = card.dataset.fieldId;
+        document.getElementById('fieldId').value = selectedField;
+
+        // Update harga
+        pricePerHour = parseInt(card.dataset.price);
+
+        // Reset jam
+        resetTimeSelection();
+
+        // 🔥 FETCH AVAILABILITY DI SINI
+        fetchAvailability();
+    });
+});
+
+
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
         const start = document.getElementById('startHour').value;
         const end = document.getElementById('endHour').value;
-
-        if (!start || !end) {
-            e.preventDefault();
-            alert('Silakan pilih jam bermain terlebih dahulu');
-        }
     });
 
     const buttons = document.querySelectorAll('.time-btn');
@@ -131,51 +184,17 @@
 
     let start = null;
     let end = null;
-    const pricePerHour = "{{ $field->price_per_hour }}";
+    let pricePerHour = 0;
+
 
     const dateInput = document.querySelector('input[name="booking_date"]');
     let disabledHours = [];
 
-    dateInput.addEventListener('change', async function() {
-        const date = this.value;
-        if (!date) return;
+dateInput.addEventListener('change', () => {
+    resetTimeSelection();
+    fetchAvailability();
+});
 
-        // reset selection
-        start = null;
-        end = null;
-        updateUI();
-
-        // enable semua dulu
-        buttons.forEach(btn => {
-            btn.disabled = false;
-            btn.classList.remove(
-                'bg-gray-200',
-                'text-gray-400',
-                'cursor-not-allowed'
-            );
-        });
-
-        // fetch availability
-        const res = await fetch(
-            `{{ route('booking.availability') }}?date=${date}`
-        );
-        const data = await res.json();
-
-        disabledHours = data.booked_hours;
-
-        // disable jam yang sudah dibooking
-        buttons.forEach(btn => {
-            const h = parseInt(btn.dataset.hour);
-            if (disabledHours.includes(h)) {
-                btn.disabled = true;
-                btn.classList.add(
-                    'bg-gray-200',
-                    'text-gray-400',
-                    'cursor-not-allowed'
-                );
-            }
-        });
-    });
 
 
 
@@ -328,4 +347,66 @@ buttons.forEach(btn => {
             priceEl.innerText = 'Rp 0';
         }
     }
+
+
+
+function resetTimeSelection() {
+    start = null;
+    end = null;
+    updateUI();
+}
+
+document.getElementById('bookingForm')
+    .addEventListener('submit', function (e) {
+
+    if (!document.getElementById('fieldId').value) {
+        e.preventDefault();
+        alert('Silakan pilih lapangan terlebih dahulu');
+        return;
+    }
+
+    if (!start) {
+        e.preventDefault();
+        alert('Silakan pilih jam bermain');
+    }
+});
+
+
+async function fetchAvailability() {
+    const date = dateInput.value;
+    const fieldId = document.getElementById('fieldId').value;
+
+    if (!date || !fieldId) return;
+
+    const res = await fetch(
+        `{{ route('booking.availability') }}?date=${date}&field_id=${fieldId}`
+    );
+
+    const data = await res.json();
+    disabledHours = data.booked_hours;
+
+    // reset dulu
+    buttons.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove(
+            'bg-gray-200',
+            'text-gray-400',
+            'cursor-not-allowed'
+        );
+    });
+
+    // disable jam bentrok
+    buttons.forEach(btn => {
+        const h = parseInt(btn.dataset.hour);
+        if (disabledHours.includes(h)) {
+            btn.disabled = true;
+            btn.classList.add(
+                'bg-gray-200',
+                'text-gray-400',
+                'cursor-not-allowed'
+            );
+        }
+    });
+}
+
 </script>

@@ -64,7 +64,7 @@
                                     Edit
                                 </a>
 
-                                {{-- optional: detail --}}
+                                {{-- detail --}}
                                 {{-- 
                                 <a href="{{ route('fields.show', $field->id) }}"
                                    class="px-3 py-1 text-sm bg-blue-100 rounded">

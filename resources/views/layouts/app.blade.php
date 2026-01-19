@@ -35,4 +35,10 @@
             </main>
         </div>
     </body>
+    <!-- Footer -->
+    <footer id="contact" class="bg-green-900 text-white py-2">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <p class="m-4">&copy; {{ date('Y') }} FutsalBooking. All rights reserved.</p>
+        </div>
+    </footer>
 </html>

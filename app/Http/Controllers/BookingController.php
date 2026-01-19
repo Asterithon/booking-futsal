@@ -27,79 +27,79 @@ class BookingController extends Controller
      */
     public function create(Request $request)
     {
-        $field = Field::first(); // sementara 1 lapangan
+        $fields = Field::where('status', 'available')->get();
         $date  = $request->booking_date ?? now()->toDateString();
 
-        return view('bookings.create', compact('field'));
+        return view('bookings.create', compact('fields'));
     }
 
     /**
      * Simpan booking
      */
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'team_name'     => 'required|string',
-            'phone'         => 'required|string',
-            'booking_date'  => 'required|date',
-            'start_hour'    => 'required|integer|min:0|max:23',
-            'end_hour'      => 'required|integer|gt:start_hour|max:24',
-            'payment_method'=> 'required|in:cash,qris',
-        ]);
+{
+    $data = $request->validate([
+        'field_id'       => 'required|exists:fields,id',
+        'team_name'      => 'required|string',
+        'phone'          => 'required|string',
+        'booking_date'   => 'required|date',
+        'start_hour'     => 'required|integer|min:0|max:23',
+        'end_hour'       => 'required|integer|gt:start_hour|max:24',
+        'payment_method' => 'required|in:cash,qris',
+    ]);
 
-        $startTime = sprintf('%02d:00:00', $data['start_hour']);
-        $endTime   = sprintf('%02d:00:00', $data['end_hour']);
+    $startTime = sprintf('%02d:00:00', $data['start_hour']);
+    $endTime   = sprintf('%02d:00:00', $data['end_hour']);
 
-        /**
-         * VALIDASI BENTROK WAKTU (WAJIB)
-         * booking.start < end AND booking.end > start
-         */
-        $conflict = Booking::where('booking_date', $data['booking_date'])
-            ->where('status', '!=', 'cancelled')
-            ->where(function ($q) use ($startTime, $endTime) {
-                $q->where('start_time', '<', $endTime)
-                  ->where('end_time', '>', $startTime);
-            })
-            ->exists();
+    /**
+     * VALIDASI BENTROK JAM (PER LAPANGAN)
+     */
+    $conflict = Booking::where('booking_date', $data['booking_date'])
+        ->where('field_id', $data['field_id'])
+        ->where('status', '!=', 'cancelled')
+        ->where(function ($q) use ($startTime, $endTime) {
+            $q->where('start_time', '<', $endTime)
+              ->where('end_time', '>', $startTime);
+        })
+        ->exists();
 
-        if ($conflict) {
-            return back()
-                ->withErrors(['time' => 'Jam yang dipilih sudah dibooking'])
-                ->withInput();
-        }
-
-        $field = Field::first();
-        $duration = $data['end_hour'] - $data['start_hour'];
-        $totalPrice = $duration * $field->price_per_hour;
-
-        // SIMPAN BOOKING
-        Booking::create([
-            'user_id'        => Auth::id(),
-            'field_id'       => $field->id,
-            'team_name'      => $data['team_name'],
-            'phone'          => $data['phone'],
-            'booking_date'   => $data['booking_date'],
-            'start_time'     => $startTime,
-            'end_time'       => $endTime,
-            'payment_method'=> $data['payment_method'],
-            'total_price'    => $totalPrice,
-            'status' => $data['payment_method'] === 'cash'
-                ? 'pending'
-                : 'pending',
-            'payment_status' => $data['payment_method'] === 'qris'
-                ? 'unpaid'
-                : 'unpaid',
-
-        ]);
-
-        // QRIS masih dummy → tidak simpan transaksi
-        if ($data['payment_method'] === 'qris') {
-            return redirect()->route('booking.payment');
-        }
-
-        return redirect()->route('dashboard')
-            ->with('success', 'Booking berhasil disimpan');
+    if ($conflict) {
+        return back()
+            ->withErrors(['time' => 'Jam yang dipilih sudah dibooking'])
+            ->withInput();
     }
+
+    // Ambil lapangan yang DIPILIH user
+    $field = Field::findOrFail($data['field_id']);
+
+    $duration   = $data['end_hour'] - $data['start_hour'];
+    $totalPrice = $duration * $field->price_per_hour;
+
+    Booking::create([
+        'user_id'        => Auth::id(),
+        'field_id'       => $field->id,
+        'team_name'      => $data['team_name'],
+        'phone'          => $data['phone'],
+        'booking_date'   => $data['booking_date'],
+        'start_time'     => $startTime,
+        'end_time'       => $endTime,
+        'payment_method'=> $data['payment_method'],
+        'payment_status' => $data['payment_method'] === 'qris' 
+    ? 'paid' 
+    : 'unpaid',
+        'total_price'    => $totalPrice,
+        'status'         => 'pending',
+    ]);
+
+    if ($data['payment_method'] === 'qris') {
+        return redirect()->route('booking.payment');
+    }
+
+    return redirect()
+        ->route('dashboard')
+        ->with('success', 'Booking berhasil disimpan');
+}
+
 
     /**
      * Batalkan booking (soft cancel)
@@ -247,29 +247,30 @@ public function update(Request $request, Booking $booking)
 public function availability(Request $request)
 {
     $request->validate([
-        'date' => 'required|date'
+        'date' => 'required|date',
+        'field_id' => 'required|exists:fields,id'
     ]);
 
-    $bookings = Booking::whereDate('booking_date', $request->date)
+    $bookings = Booking::where('booking_date', $request->date)
+        ->where('field_id', $request->field_id)
         ->where('status', '!=', 'cancelled')
-        ->get(['start_time', 'end_time']);
+        ->get();
 
     $bookedHours = [];
 
-foreach ($bookings as $booking) {
-    $start = \Carbon\Carbon::parse($booking->start_time)->hour;
-    $end   = \Carbon\Carbon::parse($booking->end_time)->hour;
+    foreach ($bookings as $booking) {
+            $start = \Carbon\Carbon::parse($booking->start_time)->hour;
+            $end   = \Carbon\Carbon::parse($booking->end_time)->hour;
 
-    for ($h = $start; $h < $end; $h++) {
-        $bookedHours[] = $h;
+        for ($h = $start; $h < $end; $h++) {
+            $bookedHours[] = $h;
+        }
     }
-}
 
     return response()->json([
         'booked_hours' => array_values(array_unique($bookedHours))
     ]);
 }
-
 
 
 

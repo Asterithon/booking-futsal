@@ -22,5 +22,11 @@ class Field extends Model
     {
         return $this->hasOne(FieldImage::class)->where('is_primary', true);
     }
+
+    public function bookings()
+{
+    return $this->hasMany(Booking::class);
+}
+
 }
 

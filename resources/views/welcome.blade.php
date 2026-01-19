@@ -18,12 +18,8 @@
     <!-- Navbar -->
     <header class="w-full fixed top-0 bg-white dark:bg-gray-800 shadow z-50">
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold text-green-600">FutsalBooking</h1>
+            <img src="{{ asset('images/app-logo.png') }}" alt="Logo" width="100">
             <nav class="flex items-center gap-4">
-                <a href="#about" class="hover:text-green-600">About</a>
-                <a href="#features" class="hover:text-green-600">Nilai Plus</a>
-                <a href="#contact" class="hover:text-green-600">Contact</a>
-
                 @if (Route::has('login'))
                     @auth
                         <a href="{{ url('/dashboard') }}" class="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700">Dashboard</a>
@@ -39,52 +35,133 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="pt-32 pb-20 bg-green-50 dark:bg-gray-800">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <h2 class="text-4xl font-bold mb-4">Booking Lapangan Futsal Jadi Mudah ⚽</h2>
-            <p class="text-lg mb-6">Pesan lapangan futsal favoritmu kapan saja, tanpa ribet.</p>
-            <a href="{{ route('register') }}" class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700">Mulai Booking</a>
+<section class="relative h-[80vh] flex items-center justify-center">
+    <!-- Background image -->
+    <img src="{{ asset('images/hero.jpeg') }}"
+         class="absolute inset-0 w-full h-full object-cover" />
+
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative z-10 text-center text-white max-w-3xl">
+        <h1 class="text-5xl md:text-6xl font-bold tracking-wide">
+            SHOW YOUR SKILL
+        </h1>
+
+        <p class="mt-6 text-lg text-gray-200">
+            Pesan lapangan. Pilih waktu. Tunjukkan skillmu.
+        </p>
+
+        <div class="mt-8 flex justify-center gap-4">
+            <a href="{{ route('login') }}"
+               class="px-6 py-3 bg-green-600 rounded text-white font-semibold">
+                Booking Sekarang
+            </a>
+
+            
         </div>
-    </section>
+    </div>
+</section>
+
 
     <!-- About Us -->
-    <section id="about" class="py-20">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <h3 class="text-3xl font-semibold mb-4">Tentang Kami</h3>
-            <p class="text-gray-600 dark:text-gray-300">
-                Kami hadir untuk memudahkan pemain futsal dalam mencari dan memesan lapangan dengan cepat.
-                Dengan sistem online, kamu bisa cek jadwal, harga, dan langsung booking tanpa harus datang ke lokasi.
-            </p>
-        </div>
-    </section>
+    <section id="features" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
 
-    <!-- Nilai Plus -->
-    <section id="features" class="py-20 bg-gray-100 dark:bg-gray-800">
-        <div class="max-w-6xl mx-auto px-6">
-            <h3 class="text-3xl font-semibold text-center mb-10">Kenapa Pilih Kami?</h3>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-6 bg-white dark:bg-gray-700 rounded-lg shadow">
-                    <h4 class="font-bold mb-2">📅 Booking Mudah</h4>
-                    <p>Cek jadwal lapangan secara real-time dan pesan langsung dari aplikasi.</p>
-                </div>
-                <div class="p-6 bg-white dark:bg-gray-700 rounded-lg shadow">
-                    <h4 class="font-bold mb-2">💳 Pembayaran Online</h4>
-                    <p>Bayar dengan berbagai metode, aman dan praktis.</p>
-                </div>
-                <div class="p-6 bg-white dark:bg-gray-700 rounded-lg shadow">
-                    <h4 class="font-bold mb-2">🏆 Lapangan Berkualitas</h4>
-                    <p>Kami bekerja sama dengan lapangan futsal terbaik di kota kamu.</p>
-                </div>
+        <h2 class="text-3xl font-bold text-center mb-12">
+            Fitur Unggulan
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+
+            <div class="p-6 rounded-lg border">
+                <div class="text-4xl mb-4">⚡</div>
+                <h3 class="font-semibold text-xl mb-2">
+                    Booking Pintar
+                </h3>
+                <p class="text-gray-600">
+                    Pesan lapanganmu dalam hitungan detik tanpa telepon.
+                </p>
             </div>
+
+            <div class="p-6 rounded-lg border">
+                <div class="text-4xl mb-4">📅</div>
+                <h3 class="font-semibold text-xl mb-2">
+                    Ketersediaan Real-Time
+                </h3>
+                <p class="text-gray-600">
+                    Langsung tahu jam yang tersedia.
+                </p>
+            </div>
+
+            <div class="p-6 rounded-lg border">
+                <div class="text-4xl mb-4">⏱️</div>
+                <h3 class="font-semibold text-xl mb-2">
+                    Slot Waktu Fleksibel
+                </h3>
+                <p class="text-gray-600">
+                    Pilih waktu mulai dan perpanjang tanpa jeda.
+                </p>
+            </div>
+
         </div>
-    </section>
+    </div>
+</section>
+
+
+    <!-- Lapangan Tersedia -->
+<section class="py-20 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-6">
+
+        <h2 class="text-3xl font-bold text-center mb-12">
+            Main di Lingkungan Terbaik
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+            @foreach ([
+                ['img' => 'pro.jpeg', 'text' => 'Professional Grade Field'],
+                ['img' => 'night.jpeg', 'text' => 'Night Play Ready'],
+                ['img' => 'comfort.jpeg', 'text' => 'Comfort & Safety'],
+            ] as $item)
+
+                <div class="relative overflow-hidden rounded-lg group">
+                    <img src="{{ asset('images/' . $item['img']) }}"
+                         class="w-full h-64 object-cover group-hover:scale-105 transition">
+
+                    <div class="absolute inset-0 bg-black/40 flex items-end">
+                        <p class="text-white p-4 font-semibold">
+                            {{ $item['text'] }}
+                        </p>
+                    </div>
+                </div>
+
+            @endforeach
+
+        </div>
+    </div>
+</section>
+
+<section class="py-16 bg-green-600 text-white text-center">
+    <h2 class="text-3xl font-bold mb-4">
+        Siap Bermain?
+
+
+    </h2>
+
+    <p class="mb-6">
+        Pilih waktumu dan amankan lapangan sekarang.
+    </p>
+
+    <a href="{{ route('booking.create') }}"
+       class="px-8 py-3 bg-white text-green-600 rounded font-semibold">
+        Start Booking
+    </a>
+</section>
 
     <!-- Footer -->
-    <footer id="contact" class="bg-green-600 text-white py-10 mt-20">
+    <footer id="contact" class="bg-green-900 text-white py-2">
         <div class="max-w-6xl mx-auto px-6 text-center">
-            <h4 class="text-lg font-semibold mb-2">Hubungi Kami</h4>
-            <p>Email: support@futsalbooking.com | Telp: +62 812-3456-7890</p>
-            <p class="mt-4">&copy; {{ date('Y') }} FutsalBooking. All rights reserved.</p>
+            <p class="m-4">&copy; {{ date('Y') }} FutsalBooking. All rights reserved.</p>
         </div>
     </footer>
 

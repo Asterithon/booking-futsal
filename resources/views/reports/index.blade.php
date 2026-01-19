@@ -50,13 +50,13 @@
     <!-- CHART: BOOKING PER HARI -->
     <div class="bg-white p-4 rounded shadow">
         <h3 class="font-semibold mb-2">Booking per Hari</h3>
-        <canvas id="bookingPerDayChart" height="120"></canvas>
+        <canvas id="bookingPerDayChart" height="50"></canvas>
     </div>
 
     <!-- CHART: STATUS BOOKING -->
     <div class="bg-white p-4 rounded shadow">
         <h3 class="font-semibold mb-2">Status Booking</h3>
-        <canvas id="statusChart" height="120"></canvas>
+        <canvas id="statusChart" height="50px"></canvas>
     </div>
 
 </div>

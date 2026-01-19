@@ -40,13 +40,15 @@
                                 Rp {{ number_format($booking->total_price) }}
                             </td>
                             <td class="py-2">
-                                {{ strtoupper($booking->payment_method) }}
+                                {{ strtoupper($booking->payment_method) }} ({{ $booking->payment_status }})
                             </td>
                             <td class="py-2">
                                 <span class="px-2 py-1 text-sm rounded
-                                        {{ $booking->status === 'pending'
-                                            ? 'bg-yellow-200 text-yellow-800'
-                                            : 'bg-green-200 text-green-800' }}">
+    {{ $booking->status === 'pending' 
+        ? 'bg-yellow-200 text-yellow-800' 
+        : ($booking->status === 'confirmed' 
+            ? 'bg-green-200 text-green-800' 
+            : 'bg-red-200 text-red-800') }}">
                                     {{ ucfirst($booking->status) }}
                                 </span>
                             </td>
