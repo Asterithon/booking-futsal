@@ -6,8 +6,9 @@
     <div class="max-w-7xl mx-auto py-6">
 
         <!-- FILTER -->
-        <form method="GET" class="flex gap-2 mb-4">
-            <select name="date" class="border rounded px-3 py-2">
+        <div class="bg-white p-4 rounded shadow">
+        <form method="GET" class="flex gap-2">
+            <select name="date" class="border rounded pl-3 pr-9 py-2">
                 <option value="">Semua</option>
                 <option value="today">Hari Ini</option>
                 <option value="tomorrow">Besok</option>
@@ -27,8 +28,9 @@
             </a>
 
         </form>
-
+</div>
         <!-- TABLE BOOKING AKTIF -->
+         <div class="bg-white p-4 mt-6 rounded shadow">
         <table class="w-full border text-sm mb-8">
             <thead class="bg-gray-100">
                 <tr>
@@ -156,5 +158,5 @@
             </tbody>
         </table>
 
-    </div>
+    </div></div>
 </x-app-layout>

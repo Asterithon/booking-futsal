@@ -4,18 +4,18 @@
     </x-slot>
 
     <div class="max-w-xl mx-auto py-6 space-y-3">
-
-        <p><b>Nama Tim:</b> {{ $booking->team_name }}</p>
-        <p><b>No Telp:</b> {{ $booking->phone }}</p>
-        <p><b>Lapangan:</b> {{ $booking->field->name }}</p>
-        <p><b>Tanggal:</b> {{ $booking->booking_date->format('d-m-Y') }}</p>
-        <p><b>Jam:</b>
+<div class="bg-white p-4 rounded shadow">
+        <p class="py-2"><b>Nama Tim:</b> {{ $booking->team_name }}</p>
+        <p class="py-2"><b>No Telp:</b> {{ $booking->phone }}</p>
+        <p class="py-2"><b>Lapangan:</b> {{ $booking->field->name }}</p>
+        <p class="py-2"><b>Tanggal:</b> {{ $booking->booking_date->format('d-m-Y') }}</p>
+        <p class="py-2"><b>Jam:</b>
             {{ date('H:i', strtotime($booking->start_time)) }}
             -
         {{ date('H:i', strtotime($booking->end_time)) }}
         </p>
-        <p><b>Pembayaran:</b> {{ $booking->payment_method }}</p>
-        <p><b>Status:</b> {{ ucfirst($booking->status) }}</p>
+        <p class="py-2"><b>Pembayaran:</b> {{ $booking->payment_method }}</p>
+        <p class="py-2"><b>Status:</b> {{ ucfirst($booking->status) }}</p>
 
         <!-- STATUS ACTION -->
         <form method="POST"
@@ -50,6 +50,6 @@
                 Batalkan Booking
             </button>
         </form>
-
+</div>
     </div>
 </x-app-layout>

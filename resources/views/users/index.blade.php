@@ -16,7 +16,7 @@
                 {{ $errors->first() }}
             </div>
         @endif
-
+<div class="bg-white p-4 rounded shadow">
         <table class="w-full border">
             <thead class="bg-gray-100">
                 <tr>
@@ -69,6 +69,6 @@
                 </tr>
                 @endforeach
             </tbody>
-        </table>
+        </table></div>
     </div>
 </x-app-layout>
