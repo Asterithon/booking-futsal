@@ -21,7 +21,7 @@
         }
     </style>
 
-    <div class="max-w-xl mx-auto py-6">
+    <div class="max-w-xl mx-auto bg-white mt-5 p-6 rounded shadow">
         <form method="POST" action="{{ route('booking.store') }}" id="bookingForm">
             @csrf
 

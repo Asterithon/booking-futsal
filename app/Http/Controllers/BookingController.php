@@ -270,7 +270,4 @@ foreach ($bookings as $booking) {
     ]);
 }
 
-
-
-
 }

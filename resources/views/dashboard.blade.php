@@ -16,9 +16,6 @@
                 <p class="text-gray-700">
                     Selamat datang, <strong>{{ auth()->user()->name }}</strong>
                 </p>
-                <p class="text-sm text-gray-500">
-                    Role: {{ auth()->user()->role }}
-                </p>
             </div>
 
 
